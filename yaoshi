@@ -1,0 +1,13 @@
+#!/bin/bash
+for i in $@;do
+ssh-copy-id  root@$i
+done
+if (($#>0)) ;then
+	ssh-keygen << eof
+
+
+
+eof
+fi
+#if (($1==9);then
+#)

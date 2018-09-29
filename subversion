@@ -1,0 +1,12 @@
+#!/bin/bash
+echo -ne "\033[31m"
+	yum -y install subversion
+	rpm -q subversion
+	mkdir /var/svn
+	svnadmin create /var/svn/project
+	cd /usr/lib/systemd/system/
+	svn import . file:///var/svn/project -m "INIT"
+	cd /var/svn/project/conf/
+	sed -i "7,+10d" passwd;echo '[/]' >> authz
+	for i in `seq 4`;do u=user$i;echo "$u = 123456">>passwd;echo "$u = rw">>authz;done	
+echo -ne "\033[0m"

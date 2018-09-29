@@ -1,0 +1,63 @@
+#!/bin/bash
+if [ $# == 0 ];then
+        version=12.2
+	#version=10.3
+	yum -y install gcc pcre-devel openssl-devel
+        useradd -s /sbin/nologin nginx
+        cd ~;tar  -xf   /usr/bin/nginx-1.$version.tar.gz
+        cd nginx-1.$version;./configure --prefix=/usr/local/nginx --user=nginx --group=nginx --with-http_ssl_module
+        #--with-stream --with-http_stub_status_module 
+	make && make install
+        nginx;nginx v
+elif [ $1 == 1 ];then
+        cd ~;tar  -zxvf  /usr/bin/nginx-1.12.2.tar.gz
+        cd nginx-1.12.2;./configure --prefix=/usr/local/nginx --user=nginx --group=nginx --with-http_ssl_module
+        make; mv /usr/local/nginx/sbin/nginx{,old}
+        cp objs/nginx  /usr/local/nginx/sbin/;make upgrade
+        nginx v
+elif [ $1 == 2 ];then
+    	case $2 in 
+	1)yum -y install gcc openssl-devel pcre-devel zlib-devel;;
+	2)yum -y install mariadb mariadb-server mariadb-devel
+	1restart mariadb;;
+	3)cd ~;tar -xf /usr/bin/lnmp_soft.tar.gz
+	yum -y install php php-mysql lnmp_soft/php-fpm-5.4.16-42.el7.x86_64.rpm
+	1restart php-fpm;;
+	4)yum -y install telnet memcached php-pecl-memcache ;;
+	1234)for i in {1..4};do nginxinstall 2 $i;done;;
+	esac
+elif [ $1 == 0 ];then
+	nginx p
+	rm -rf /usr/local/nginx/
+elif [ $1 == e ];then	
+echo '<?php
+$i=100;
+echo $i;
+?>' >/usr/local/nginx/html/e.php
+elif [ $1 == h ];then
+	jiaoben nginxinstall
+elif [ $1 == u ];then
+	yum -y install  httpd-tools
+	echo tom
+	htpasswd -c /usr/local/nginx/pass tom
+	echo haha 
+	htpasswd  /usr/local/nginx/pass haha
+elif [ $1 == s ];then
+     cd ~/lnmp_soft/php_scripts/
+     tar -xf php-memcached-demo.tar.gz 
+     cp -a php-memcached-demo/* /usr/local/nginx/html/
+     cd /usr/local/nginx/
+     cat /var/lib/php/session/*;echo
+     cd html/
+     sed -i 's/<body.*>/<body bgcolor=cyan>/' home.php index.php 
+     yum -y install memcached
+     systemctl restart memcached
+     ss -tunlp|grep memcached
+     yum -y install  php-pecl-memcache
+	echo -e '#memcache #"tcp://...:11211"' >> /etc/php-fpm.d/www.conf
+     vim  /etc/php-fpm.d/www.conf  
+     1restart php-fpm
+fi
+
+
+

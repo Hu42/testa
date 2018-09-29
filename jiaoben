@@ -1,0 +1,12 @@
+#!/bin/bash
+(($#))||{ ls /var/bin;exit;}
+
+
+[ $# -gt 1 ]&&echo -e '#!/bin/bash\necho -ne "\\033[31m"\n\necho -ne "\\033[0m"' >> /usr/bin/$1 
+touch /usr/bin/$1
+chmod +x /usr/bin/$1
+vim /usr/bin/$1
+
+
+rm -f /var/bin/$1
+ln -s /usr/bin/$1 /var/bin/$1 2> /dev/null

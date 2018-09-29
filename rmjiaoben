@@ -1,0 +1,4 @@
+#!/bin/bash
+echo -ne "\033[31m"
+rm -f /usr/bin/$1 /var/bin/$1
+echo -ne "\033[0m"

@@ -1,0 +1,14 @@
+#!/bin/bash
+echo -ne "\033[31m"
+if (($#==0));then
+read -p "path:" path
+read -p "name:" name
+if [ $name != n ];then find $path -name *$name* -type f > ~/filegrep
+else	find $path -type f > ~/filegrep;fi
+wc ~/filegrep
+else case $1 in 
+l) cat -n ~/filegrep;;
+g) read -p "grep:" str;for i in `cat ~/filegrep`;do grep -si $str $i;done;;
+esac
+fi
+echo -ne "\033[0m"

@@ -1,0 +1,5 @@
+#!/bin/bash
+echo -ne "\033[31m"
+a=({0..9} {a..f});color=;for i in {1..6};do color+=${a[RANDOM%16]};done;echo $color;sed -i "s/<body.*>/<body bgcolor=#$color>/" /usr/local/tomcat/webapps/ROOT/index.jsp
+echo -ne "\033[0m"
+

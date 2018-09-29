@@ -1,0 +1,14 @@
+#!/bin/bash
+echo -ne '\033[31m'
+case $1 in
+[0p])   /usr/local/tomcat/bin/shutdown.sh >/dev/null;echo shutdown.sh;;
+[1s])   /usr/local/tomcat/bin/startup.sh >/dev/null;echo start.sh;;
+[2r])   $0 0;$0 1;;
+*[3l])  netstat -nutlp|grep java;;
+[4cv]*)	vim /usr/local/tomcat/conf/server.xml;;
+[5m])	ls /usr/local/tomcat
+	read -p "mkdir?:" dir;[ $dir != n ]&& mkdir -p /usr/local/tomcat/$dir ;;
+[6g])	egrep "<Host|<Context" /usr/local/tomcat/conf/server.xml;;
+*)      echo "0shut;1start;2restart;3list";
+esac
+echo -ne '\033[0m'

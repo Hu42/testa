@@ -1,0 +1,2 @@
+#!/bin/bash
+for j in `seq 0 $1`;do for i in *;do awk "END{if(NR==$j)print $j,FILENAME}" $i;done;done

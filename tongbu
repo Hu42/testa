@@ -1,0 +1,8 @@
+#!/bin/bash
+read -p "目录?:" a
+((a==1))||exit
+while  inotifywait  -rqq /opt/
+do
+rsync --delete -az /opt/  root@192.168.4.207:/opt/
+done &
+

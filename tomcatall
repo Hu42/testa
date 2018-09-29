@@ -1,0 +1,20 @@
+#!/bin/bash
+echo -ne "\033[31m"
+if [ $# == 0 ];then
+	jiaoben tomcatall
+elif [ $1 == i ];then
+        cd lnmp_soft/
+        tar -xf apache-tomcat-8.0.30.tar.gz
+        mv apache-tomcat-8.0.30/ /usr/local/tomcat
+elif [ $1 == key ];then
+	echo -e "123456\n123456\n\n\n\n\\n\n\ny\n\n" > ~/key
+	keytool -genkeypair -alias tomcat -keyalg RSA -keystore /usr/local/tomcat/keystore < ~/key
+elif [ $1 == varnish ];then
+	yum -y install gcc readline-devel ncurses-devel pcre-devel.i686 ~/lnmp_soft/python-docutils-0.11-0.2.20130715svn7687.el7.noarch.rpm 
+	useradd -s /sbin/nologin varnish
+	cd ~/lnmp_soft/;tar -xf varnish-5.2.1.tar.gz
+	cd varnish-5.2.1/;./configure ;make&&make install
+	cp etc/example.vcl /usr/local/etc/default.vcl
+	echo /usr/local/etc/default.vcl
+fi
+echo -ne "\033[0m"
