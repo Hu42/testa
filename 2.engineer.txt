@@ -1,0 +1,243 @@
+1.#################################################
+lsblk  	fdisk /dev/vdb ,		lsblk		partprobe 
+mkfs.ext4 /dev/vdb1 , 	blkid /dev/vdb2,	 	mount,
+echo"/dev/vdb1 /my1 ext4 defaults 备份0 检测0">>/etc/fstab
+mount -a 	df -h
+pvs		pvcreate	pvdisplay	pvremove	/
+vgs		vgcreate 	vgdisplay	vgremove	vgextend	
+lvs		lvcreate	lvdisplay	lvremove	lvextend	
+vgcreate systemvg /dev/vdc[1-2]   -s
+vgchange -s PE大小 卷组名     #卷组已存在修改PE的大小
+vgextend systemvg /dev/vdc3 /dev/vdc5
+lvcreate -L 16G -n mylv systemvg
+lvextend -L 18G /dev/systemvg/mylv 
+umount /lv		lvremove /dev/systemvg/mylv 
+vgremove systemvg
+pvremove /dev/vdc[1-3] /dev/vdc5
+ext4:resize2fs		xfs:xfs_growfs
+2.##################################################
+'* > ? []  {} % $'
+`date  +%F`=$(date  +%F)
+&>/dev/null
+2>&1 	1>&2...>&2
+– 变量名只能由字母/数字/下划线组成,区分大小写
+– 变量名不能以数字开头,不要使用关键字和特殊字符
+read -p  
+$#  $* $n $?
+-e存在 	d：目录	-f：文件
+3.##<<SELinux>><<firewall>>############################################
+#(1)#SELinux安全机制
+– enforcing(强制)、permissive(宽松)– disabled(彻底禁用)
+– 临时切换:setenforce  1...0    #本次开机临时切换状态getenforce
+– 固定配置:/etc/selinux/config 文件SELINUX=permissive
+#(2)#软件防火墙： firewalld 
+firewall-cmd --get-default-zone 
+firewall-cmd --set-default-zone=public
+public	trusted	block	drop
+firewall-cmd --zone=public --add-service=ftp
+firewall-cmd --zone=public --list-all  
+# firewall-cmd --permanent --zone=public --add-service=http
+# firewall-cmd --reload 
+# firewall-cmd --zone=public --list-all  
+1.##<<httpd>>#########################################################
+	alias peizhicmd='vim /etc/httpd/conf.d/nsd01.conf'
+	alias shuaxincmd='systemctl restart httpd'
+	alias fangwencmd='firefox server0.example.com:8909 '
+##1-装包		yum -y install httpd mod_wsgi
+##1.1	--selinux端口开放	semanage port -l | grep http_port_t
+		-p协议-t类型	semanage port -a -t http_port_t  -p tcp  8909
+##1.2	--显示内容	mkdir /webroot
+ 			###echo '<h1>wo shi webroot' > /webroot/index.html
+	1.21   	#selinux标签	chcon -R --reference=/var/www /webroot
+			ls -Zd /webroot
+  	1.22  	cd /webroot
+	1.221	wget http://classroom.example.com/pub/materials/webinfo.wsgi
+##2--配置文件	vim /etc/httpd/conf.d/nsd01.conf
+			listen 8909
+ 	2.1		<VirtualHost *:8909>
+  			ServerName server0.example.com
+  			DocumentRoot /webroot
+	 		(WsgiScript)Alias /  /webroot/webinfo.wsgi###
+ 			</VirtualHost>
+ 	2.2		<Directory /webroot>
+   			Require all granted    #允许所有人访问/ip 172.  
+ 			</Directory>
+##3.1--重启	systemctl restart/enable httpd
+##3.2--访问  	firefox server0.example.com:8909
+
+# firewall-cmd --permanent --zone=public
+   --add-forward-port=port=5423:proto=tcp:toport=80
+# firewall-cmd --reload 
+# firewall-cmd --zone=public --list-all
+[desktop0]# firefox 172.25.0.11:5423
+
+yum -y install mod_ssl
+/etc/pki/tls/certs/		/tls/certs/server0.crt
+/etc/pki/tls/certs/		/example-ca.crt
+/etc/pki/tls/private/	/tls/private/server0.key
+vim /etc/httpd/conf.d/ssl.conf 
+59行  DocumentRoot
+60行  ServerName  www0.example.com:443
+100 SSLCertificateFile /etc/pki/tls/certs/server0.crt
+107 SSLCertificateKeyFile /etc/pki/tls/private/server0.key
+122 SSLCACertificateFile /etc/pki/tls/certs/example-ca.crt
+2####<<vsftpd>>########################################################
+##1--装包		yum -y install vsftpd
+##1.1--防火墙
+##--重启		systemctl restart...enable vsftpd
+		/var/ftp/
+##--访问		firefox ftp://172.25.0.11
+##--互联网中常见协议：
+      80     http:超文本传输协议
+      443    https：安全的超文本传输协议
+      21     ftp:文件传输协议
+      69     tftp:简单的文件传输协议
+      23     telnet:远程管理协议
+      53     dns：域名解析协议
+      25     smtp：发邮件协议
+      110    pop3：收邮件协议
+      161    snmp：网络管理协议
+3.##<Samba服务基础>###################################################
+– 用途:为客户机提供共享使用的文件夹
+– 协议:SMB(TCP 139)验证、CIFS(TCP 445)传输数据
+##--装包1		yum -y install samba
+(1)##--用户		useradd -s /sbin/nologin harry
+			pdbedit -a harry------pdbedit -L     
+(2)##--文件		mkdir /common
+		setfacl -m u:harry:rwx /common/
+(4)##--安全	# getsebool -a | grep samba       #查看SELinux布尔值
+ 			setsebool  samba_export_all_rw on  #修改SELinux布尔值
+##--		firewall-cmd --set-defaults-zone=trusted
+(3)##--配置文件	vim /etc/samba/smb.conf
+		workgroup = STAFF
+		[common]
+		path = /common
+		write list = harry
+##--重启		systemctl restart..enable smb
+
+客户端
+##--装包2		yum -y install samba-client
+			smbclient -L //172.25.0.11 
+			smbclient -U harry //172.25.0.11/common
+##--装包3		yum -y install cifs-utils
+##--挂载		mkdir /mnt/nsd01
+			mount -o user=harry,pass=123 //172.25.0.11/common /mnt/nsd01/
+		vim /etc/fstab ----//172.25.0.11/common  /mnt/nsd01   cifs
+		defaults,user=harry,pass=123,_netdev  0   0
+##--multiuser机制	_netdev,multiuser,sec=ntlmssp
+		[student@desktop0 ~]$ cifscreds add -u harry 172.25.0.11
+4.##[nfs]#########################################################
+##-1-装包		yum -y install nfs-utils
+  1.1    	mkdir -p /abc/{a,b,c}
+  1.2     	firewall-cmd --set-defaultzone=trusted
+##2-配置文件	vim /etc/exports------/abc       *(ro)
+##3--重启		systemctl restart/enable nfs-server/../nfs/../nfs-server.service
+##--开自挂	vim  /etc/fstab------172.25.0.11:/abc  /mnt/nfs   nfs   defaults,_netdev 0 0
+----------c......NFS共享..c----------Network File System  
+showmount  -e  classroom.example.com
+# mount classroom.example.com:/home/guests/   /home/guests/
+5.##[iSCSI]#########################################################
+##1--装包1	yum -y install targetcli
+		firewall-cmd --set-deault-zone=trusted
+##2.1--1包		/>backstores/block 
+		create name=nsd dev=/dev/vdb
+##2.2--2包		/> iscsi/                  ####倒域名##
+		create  iqn.2018-07.example.com:server0
+##2.21--1包进2包	/> iscsi/iqn.2018-07.example.com:server0/tpg1/luns  			
+		create   /backstores/block/nsd 
+##2.22--IP		/> iscsi/iqn.2018-07.example.com:server0/tpg1/portals 
+  		create  172.25.0.11 
+##2.23--客户端	/> iscsi/iqn.2018-07.example.com:server0/tpg1/acls    
+		create  iqn.2018-07.example.com:desktop0
+##3-重启1	systemctl restart/enable target
+##1--装包2	yum repolist
+		yum -y install iscsi-initiator-utils.i686 
+##2.1--配置文件	vim /etc/iscsi/initiatorname.iscsi
+			InitiatorName=iqn.2018-07.example.com:desktop0
+##2.2--找共享存储	iscsiadm --mode discoverydb --type sendtargets --portal 172.25.0.11 --discover
+##3.1--重启2	systemctl daemon-reload
+##3.2--重启		systemctl restart/enable iscsi
+##4--		lsblk#######
+6.##[mariadb-server]################################################
+##--装包		yum -y install mariadb-server
+##--重启		systemctl restart mariadb
+##--进初		mysql
+##--初密		mysqladmin -u root  password  '123'
+##--进		mysql -u root  -p123 
+			wget http://class
+##--创库		> create database nsd;  
+		mysql -u root -p123 nsd < users.sql
+##--放权 		> grant  select  on  nsd.*  to  lisi@localhost  identified 
+##--show库>	 show databases;
+##--show表	[(none)]> use  nsd;> show table;
+##--增		> insert base values('6','Barbara','789');
+##--查		> select user,host,password from user;
+##--删		> delete from user where password='';> flush privileges;
+##--改		> update base set name='hahahaha',age=25  where id=5;
+7.##[parted][交换空间]################################################
+parted /dev/vdb 
+(parted) mktable 	gpt   
+(parted) print                #输出分区表信息
+(parted) mkpart 
+(parted) quit  
+parted /dev/vdb mklabel gpt
+parted /dev/vdb mktable primary 1 1G
+交换空间
+mkswap /dev/vdb1  
+swapon /dev/vdb1  
+swapon  -s  
+swapoff /dev/vdb2
+/dev/vdb1  swap  swap defaults 0 0
+swapon  -a 
+8.##[链路聚合]################################################
+创建虚拟网卡 team0				 man teamd.conf
+	nmcli connection add type team con-name team0 ifname team0 autoconnect yes config '{"runner": {"name": "activebackup"}}'
+nmcli connection delete team0
+添加成员
+nmcli connection add type team-slave con-name team0-1 ifname eth1 master team0 
+3.为team0配置IP地址
+nmcli connection modify 'team0' ipv4.method manual ipv4.addresses '192.168.1.1/24' connection.autoconnect  yes
+4.激活所有配置
+		nmcli connection up team0;nmcli connection up team0-1
+		ifconfig
+	teamdctl team0 state
+	ifconfig eth1 down;
+	teamdctl  team0 state
+	nmcli connection delete team0
+	nmcli connection delete team0-1
+
+9.##[邮件]################################################
+yum -y install postfix
+vim /etc/postfix/main.cf
+systemctl restart postfix
+
+ 99行    myorigin = server0.example.com   #默认补全的域名后缀
+ 116行  inet_interfaces = all           #允许所有人使用邮件服务
+ 164行  mydestination = server0.example.com  #判断为本域邮件
+mail -s '葵花宝典'  -r   yg  xln
+haha xixi hehelele
+.    #提交邮件信息
+
+mail -u xln
+Heirloom Mail version 12.5 7/5/10.  Type ? for help.
+"/var/mail/xln": 1 message 1 new
+>N  1 yg@server0.example.c  Tue Jul 17 14:25  19/631   
+& 1
+& q    #退出
+########################################################
+hostnamectl set-hostname desktop0.example.com
+lab smtp-nullclient setup 将desktop模拟考官机
+100	myorigin=desktop0.example.com
+116 	inet_interfaces = loopback-only
+137	local_transport=error:error1
+164 	mydestination =
+267 	mynetworks=127.0.0.0/8
+318	relayhost=[smtp0.example.com]
+lab nfskrb5 setup
+
+
+
+
+
+
+

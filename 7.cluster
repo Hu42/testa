@@ -1,0 +1,102 @@
+systemctl stop NetworkManager
+route -n
+route add/del default gw 192.168.4.54
+for i in A a t s S m w r;do echo $i; man ipvsadm|sed -rn "/^ +-$i/,/^$/p";done
+A t s
+a d r
+m g i w
+Ln S C
+Z清计数
+ipvsadm -A -t 192.168.2.54:80 -s rr
+ipvsadm -E -t 192.168.2.54:80 -s wrr
+ipvsadm -a -t 192.168.2.54:80 -r 192.168.4.53(:80) -m
+ipvsadm -a -t 192.168.2.253:80 -r 192.168.4.53(:80) (-g)
+ipvsadm -d -t 192.168.2.54:80 -r 192.168.4.53
+ipvsadm -e -t 192.168.2.54:80 -r 192.168.4.53:80 -w3 -m
+ipvsadm -S > /etc/sysconfig/ipvsadm 
+
+ifconfig eth0:1 192.168.4.253
+vim /etc/rc.local
+for i in lo all;do
+i=/proc/sys/net/ipv4/conf/$i
+echo 1 > $i/arp_ignore
+echo 2 > $i/arp_announce
+done
+grep . /proc/sys/net/ipv4/conf/{lo,all}/*{ignore,announce}
+ifconfig lo:1 192.168.4.253/32
+watch -n1 ipvsadm -Ln --stats
+ssh -o StrictHostKeyChecking=no server0
+yum -y install nmap
+ nmap -sS -n -p 80 192.168.4.53|grep open
+|tac|rev
+ip addr show 
+sed -i '14s/^#*/#/'		 			/etc/keepalived/keepalived.conf
+sed -i '19s/VI_1/lvsha/;27s/1111/123456/' /etc/keepalived/keepalived.conf
+sed -i '30s/200.16/4.253/;31,32d' 		/etc/keepalived/keepalived.conf
+sed -i '20s/MASTER/BACKUP/;23s/100/50/' 	/etc/keepalived/keepalived.conf
+
+
+yum -y install ceph-deploy
+mkdir ~/ceph-cluster/
+cd ~/ceph-cluster/
+ceph-deploy new node1 node2 node3
+ ceph-deploy purge node1 node2 node3 
+ ceph-deploy purgedata node1 node2 node3
+ ceph-deploy forgetkeys
+ceph-deploy install node1 node2 node3
+ceph-deploy --overwrite-conf mon create-initial
+cephdisk b
+ll /dev/vdb?
+for i in {1..3};do ceph-deploy disk  zap  node$i:vdc   node$i:vdd    ;done
+for i in {1..3};do ceph-deploy osd create node$i:vdc:/dev/vdb1 node$i:vdd:/dev/vdb2  ;done
+查看存储池	ceph osd lspools 
+创建镜像	rbd create image1 --size 10G 	--image-feature layering
+列出		rbd list   	
+信息		rbd info   image1 	grep size
+容量		rbd resize image1 --size 10G 	--allow-shrink
+映射为本地磁盘rbd map image1
+rbd snap create   zzz --snap zzz1
+rbd snap rollback zzz --snap zzz1
+rbd snap ls zzz
+
+for i in 11 12 13;do yaoshi1 $i;done
+for i in 11 12 13;do sscp 192.168.4.$i;done
+   51  jiaoben sscp192 
+    1  chushi
+    4  chrony254
+    2  yaoshi2
+	  hostsnode  ;vim /etc/hosts;
+    3  yaoshi5 ;
+for i in 2 3;do scp /etc/hosts node1$i:/etc/hosts;done
+for i in 11 12 13;do sscp 192.168.4.$i;done
+       cephinit 
+    5  jiaoben cephdisk
+for i in {1..3};do ceph-deploy disk  zap  node1$i:vdc   node1$i:vdd    ;done
+for i in {1..3};do ceph-deploy osd create node1$i:vdc:/dev/vdb1 node1$i:vdd:/dev/vdb2  ;done
+
+scp node1:/etc/ceph/ceph.c* /etc/ceph/
+ vim secret.xml   
+virsh secret-define --file secret.xml;
+#virsh secret-undefine bf44537e-f158-4525-8fe1-0df12b36c8cb
+ceph auth get-key client.admin #####cat /etc/ceph/ceph.client.admin.keyring
+virsh secret-set-value --secret $UUID --base64 `ceph auth get-key client.admin`
+virsh secret-get-value --secret $UUID
+virsh dumpxml avpc > /tmp/avpc1.xml
+2 <name>avp1c</name>
+3  /<uuid>/d
+virsh define /tmp/avpc1.xml
+virsh list (--all 包括不开机)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

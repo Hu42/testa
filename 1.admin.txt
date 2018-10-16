@@ -1,0 +1,71 @@
+(1)
+ext4 xfs swap hd:IDE sd:SCSI sda5 
+pwd cd ls -ldah ,less head tail 
+uname -r,lscpu,vim /proc/mem
+/bin/bash ,cat /etc/redhat-release ,
+umount ,ls /dvd/Packages ,
+(2)
+rm -rf ,mv ,\cp -r /root/* .
+vim /root/.bashrc ,
+rpm -q -ivh -e --import /dvd/RPM- 
+vim /etc/yum.repos.d/rhel7.repo 
+[] name enabled gpgcheck baseurl  
+yum-config-manager --add-repo ,,,,,,  
+yum clean all,yum repolist  ,
+yum -y install remove
+yum search ftp,wget (-O /hgq)
+gzip .gz bzip .bz2 xz .xz 
+tar -zcf -jcf -Jcf -xf -C -tf
+grep -i -v ^#$ /
+find / -a-o -maxdepth -type f d l -(i)name "" 
+-size +-kMG -user -group -mtime -exec {} \;
+(3)
+vim /etc/sysconfig/network-scripts/ifcfg-eth0 ,
+nmcli connection show,nmtui ,route 
+nmcli connection modify "System eth0" 
+ipv4.method manual ipv4.addresses "" ipv4.dns ... 
+connection.authconnect yes 
+nmcli connection up "System eth0"
+systemctl stop sshd.service 
+nslookup classroom.example.com
+echo nameserver 172.25.254.254 > /etc/resolv.conf 
+(4)
+useradd nsd01 -u -g -G -d -s   /sbin/nologin
+grep nsd01 /etc/passwd ,tail -1  /etc/passwd ,id nsd01
+usermod -u -d -s -G -g        userdel -r
+groupadd tarena -g            groupdel 
+gpasswd -a -d natasha stugrp
+grep stugrp /etc/group
+ll /etc/shadow
+passwd --stdin nsd01
+usermod -d /abc  harry;		
+cp -r /home/harry/  /abc;
+chown -R harry:harry /abc;su -
+(5)
+----------a......NTP---------network time protocol  
+yum -y install chrony ;rpm -q chrony 
+vim /etc/chrony.conf ...
+server classroom.example.com iburst
+systemctl restart...enable chronyd...date
+----------b.实现网络用户：用户集中管理，用户由LDAP服务器创建
+yum  -y  install  sssd;yum  -y  install  authconfig-gtk
+exit;gos;authconfig-gtk ;
+dc=example,dc=com 
+classroom.example.com  
+http://classroom.example.com/pub/example-ca.crt
+systemctl restart...enable sssd
+id ldapuser0  
+
+(6)
+chmod ugo+-=rwxsst...777 /nsd
+chown lisi:lisi /nsd 
+id lisi  ;...ls -ld /nsd   
+Set UID – 适用于可执行文件,Set UID可以让使用者具有文件属主的身份及部分权限
+Set GID– 适用于目录,Set GID可以使目录下新增的文档自动设置与父目录相同的属组
+Sticky Bit– 适用于开放 w 权限的目录,可以阻止用户滥用 w 写入权限(禁止操作别人的文档)
+setfacl[-R] -m u:u'name:rwx -x u:u'name -b /nsd 
+getfacl /nsd
+crontab -e -l -r -u * * * * *  date >> /opt/time.txt
+
+
+

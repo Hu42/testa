@@ -1,0 +1,80 @@
+– man hier
+history -c
+vim /etc/profile		 HISTSIZE=1000  //默认记录1000条
+• du,统计文件的占用空间-s:只统计每个参数-h:(K、M等)
+– date +%F、date +%R
+ln -s 	软连接 --> 原始文档 --> i节点 --> 文档数据
+ln		硬连接 --> i节点 --> 文档数据
+ls -i	#查看i节点的编号
+man 5 passwd   #5代表帮助类型，配置文件帮助信息
+zip -r /opt/nsd.zip  /boot/ /etc/passwd
+unzip /opt/nsd.zip -d /mnt 
+	:set nu|nonu  显示/不显示行号
+	:set ai|noai  启用/关闭自动缩进
+vim的缓存文件,删除缓存文件:::：：：：::::::::::::
+   交换文件与源文件在用一个路径下，为隐藏文件
+自定义Yum仓库#############################
+# scp /root/桌面/tools.tar.gz     root@192.168.4.7:/root/
+tar -xf /root/tools.tar.gz -C /
+createrepo /tools/other/
+ls /tools/other/repodata
+vim /etc/yum.repos.d/rhel7.repo
+[myrpm]
+name=myrpm
+baseurl=file:///tools/other
+enabled=1
+gpgcheck=0
+yum repolist
+yum -y install sl cmatrix oneko
+rpm -ql sl
+源码编译安装##################################
+ yum -y install gcc make
+tar  -xf  /tools/inotify-tools-3.13.tar.gz  -C   /
+# cd /inotify-tools-3.13/
+# ./configure --prefix=/mnt/myrpm
+# make
+# make install
+# ls /mnt/
+# ls /mnt/myrpm/
+# ls /mnt/myrpm/bin/
+<dns>###############################
+yum -y install bind-chroot bind
+cp /etc/named.conf  /root/
+vim /etc/named.conf  
+options {directory 	"/var/named";  #指定地址库文件存放位置
+ };
+ zone "tedu.cn"  IN  {          #指定本机负责解析的域名
+	type  master;              #指定本机为权威服务器
+	file  "(bj.)tedu.cn.zone";      #指定地址库文件名字
+//        recursion no;      #禁用递归解析
+ };
+3.建立地址库文件
+# cd  /var/named/
+# cp -p  named.localhost   tedu.cn.zone
+# ls -l  tedu.cn.zone
+# vim /var/named/tedu.cn.zone
+	tedu.cn.  	NS    svr7
+	svr7      	A     192.168.4.7
+  	bj.tedu.cn.	NS      pc207
+  	pc207      	A       192.168.4.207
+	www       	A     1.1.1.1
+  	*          	A      1.2.3.4
+  	$GENERATE 1-50 pc$   A   192.168.10.$
+   	tts       	CNAME     ftp
+# systemctl restart named
+# echo nameserver 192.168.4.7  >  /etc/resolv.conf 
+# nslookup  www.tedu.cn
+	Non-authoritative answer:    #非权威解答
+      1./etc/hosts(优先级最高)
+      2./etc/resolv.conf 
+          3.寻找DNS服务器
+
+
+
+
+
+
+
+
+
+

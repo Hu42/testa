@@ -1,0 +1,31 @@
+rpm -e --nodeps mariadb-server
+mysql -hlocalhost -uroot -p`grep 'rary\ password' /var/log/mysqld.log |awk {print\\\$NF}`
+show variables like "validate%";
+set global validate_password_policy=0;#echo validate_password_policy=0 >> /etc/my.cnf
+set global validate_password_length=6;
+alter user user() identified by '123456';
+-------数据类型
+tinyint smallint mediumint int bigint 
+float double decimal(4,2) 
+unsigned int(3) zerofill not null default 'bob' 
+set("","","","") enum(,,)
+select now();select sysdate();
+select year(now()); select month(now()); select day(now());
+select time(now()); select date(now());
+select curtime(); select curdate();
+-------操作
+create table t7(meeting datetime, party timestamp);
+select * from t44;
+insert into t44;
+update t44 set name=1;
+delete from t44;
+alter table t44 add f int(4) unsigned zerofill not null default 18 after g;
+		modify f int unsigned first;
+		change f f1 int unsigned;
+		drop f;
+		rename t43;
+create table t45(id int,index(id));
+alter table add 45(name char,index(name));
+create index iidd on t45(id);
+drop index iidd on t45;
+show index from t45\G;

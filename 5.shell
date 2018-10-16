@@ -1,0 +1,216 @@
+printf "%-5s %-10s %-4.2f\n" 03 Jeff 98.4323
+%s 字符串%d, %i 十进制整数%e, %E, %f6. %f2 %f6.2浮点格式,-左对齐,
+统计文件或者文本中包含匹配字符串的行数 -c 选项：grep -c root /etc/passwd
+
+>mima;for i in `seq 10`;do echo $RANDOM+$RANDOM+100000000 >> mima;done;bc<mima
+for i in `seq 10`;do echo $RANDOM+$RANDOM+100000000|bc;done
+
+yum  -y  install  expect   
+expect << EOF
+spawn ssh 192.168.4.5
+expect "string" {send "command\r" }
+EOF
+ ssh -o StrictHostKeyChecking=no server0
+
+expr substr $pi 1 10 	内容 首位位置 位数
+echo ${pi::10}			内容:首位位置(0起) 位数
+echo $pi|cut -b 1-10	(内容|)首位数-末位数 (<文件)
+for i in `seq 0 $[${#pi}-1]`;do echo i$i=${pi:i:1};pii[i]=${pi:i:1};done------------echo $pi|cut -b 1,10,6,1-6,1-
+for i in `seq 8`;do echo -n ${x:$[RANDOM%62]:1};done;echo
+str='';for i in `seq 8`;do str=$str${x:$[RANDOM%62]:1};done;echo $str
+for i in `seq 8`;do expr substr $x $[RANDOM%62+1] 1;done
+for i in `seq 8`;do `expr substr $x $[RANDOM%62+1] 1`;done
+for i in `seq 8`;do expr substr $x $[RANDOM%62+1] 1;done > mima;str='';for i in `cat mima`;do str=$str$i;done;echo $str
+for i in `seq 8`;do echo $x|cut -b $[RANDOM%62+1];done
+for i in `seq 8`;do echo $x|cut -b $[RANDOM%62+1];done > mima;str='';for i in `cat mima`;do str=$str$i;done;echo $str
+for i in `seq 8`;do cut -b $[RANDOM%62+1]<x;done;>mima;str='';for i in `cat mima`;do str=$str$i;done;echo $str
+a=(`echo {{0..9},{a..z},{A..Z}}`);for i in `seq ${#a[@]}`;do echo ${a[i-1]};done
+
+()	输出取值	另起shell
+		$(command)			`command`
+		array=(a b c d)
+(())	运算取值 	比较'== < > <= >='	赋值运算'let = += '	真假		
+		$((a+1))				
+		for((i=0;i<5;i++))	
+		((i<5))	
+		((a++))
+		((0));$?=1
+[]	运算取值	比较'test '	数组
+		$[1+1]
+		[ a != b -o a == b ] 
+		[ 1 -eq 1 ] 
+		[  ];$?=1	[ 0 ];$?=0 		[ " " ];$?0
+		array[]
+[[]]	比较'支持? * []'
+		[[ hello == hell? ]]
+		[[ $a == z* ]]    # 如果$a以"z"开头(模式匹配)那么结果将为真
+		[[ a||b&&c ]]
+[] [[]]		-n -z []变量要加"" [[]]不用
+			且或非不同
+			=~正则等于只能用于[[]]
+			< > 用于[[]]
+{}	取值	匿名函数
+	1	个数		echo ${#@}	echo ${#str}	echo ${#a[@]}
+	2	大小写	echo	${A^^}	echo ${A,,}
+	3	替换		echo ${A/8/X}	echo ${A//8/X}
+	4	掐头		echo ${A#*:}	echo ${A##*:}
+	5	去尾		echo ${A%:*}	echo ${A%%:*}			mv $i  ${i%.*}.txt
+	6	头尾替换	echo ${A/#8/X}	echo ${A/%8/X}
+有冒号7	初值		echo ${A:-$B}	${A:=$B}				A空输出$A,否则输出$B
+则空或8	存改		echo ${A:+$B}	
+未定义9	错输		echo ${A:?$B}	A不存在或空则错误输出$B,exit 
+	10	截取		echo ${A::1}
+		截到尾	echo ${A:1-3}	echo ${A: -2}	echo ${A:a-2}	echo ${A:(2)}	
+
+正则-----------
+^	$	[]	[^]		
+.	*	+	?
+{}	()	|	\b		{n,m}{n}{n,}   \b\<\> \B非边界 \W符号
+后6反斜线,后4引号
+[]	[^]
+.	()	\b	^	$
++	?	*	{}
+|
+
+通配符-------------
+*	?	[]	[^][!]		{,}
+特殊符号----------
+[:alpha:]	匹配当前归类中的大写和小写字母字符。例如，'[0-9]{3}[[:alpha:]]{2}' 匹配三个数字，后跟两个字母。
+[:lower:]	匹配当前归类中的小写字母字符。例如，'[[:lower:]]' 不匹配 A，因为 A 为大写。
+[:upper:]	匹配当前归类中的大写字母字符。例如，'[[:upper:]ab]' 与以下其中一项匹配：任何大写字母、a 或 b。
+[:digit:]	匹配当前归类中的数字。例如，'[[:digit:]-]+' 匹配含有一个或多个数字或横线的字符串。同样，'[^[:digit:]-]+' 匹配含有一个或多个不是数字或横线的字符的字符串。
+[:xdigit:] 匹配字符类 [0-9A-Fa-f] 中的字符。
+[:alnum:]	匹配当前归类中的数字、大写和小写字母字符。例如，'[[:alnum:]]+' 匹配含有一个或多个字母和数字的字符串。
+[:word:]	匹配当前归类中的字母、数字或下划线字符。[[:word:]] 等效于 [[:alnum:]_]。
+
+[:punct:]	匹配其中一个字符： !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~.[:punct:] 子字符类不能包括当前归类中可用的非 ASCII 标点字符。
+[:graph:]	匹配打印字符。[[:graph:]] 等效于 [[:alnum:][:punct:]]。
+[:space:]	匹配单个空格 (' ')。例如，以下语句搜索 Contacts.City 以查找任何名称为两个词的城市：
+[:blank:]	匹配一个空白区或水平制表符。[[:blank:]] 等效于 [ \t]。
+[:whitespace:]	匹配一个空白字符，例如，空格、制表符、换页符和回车符。
+[:print:]	匹配打印字符和空格。[[:print:]] 等效于 [[:graph:][:whitespace:]]。
+
+[:ascii:]	匹配任何七位的 ASCII 字符（0 到 127 之间的顺序值）。
+[:cntrl:]	匹配顺序值小于 32 或字符值为 127 的 ASCII 字符（控制字符）。控制字符包括换行符、换页符、退格符，等等。
+awk 'BEGIN{for(i=32;i<=127;i++){printf i"\t";printf"%c\n",i}}'
+printf "%x\n" 0x61
+0000 0001 1 01 SOH (start of handing) 	标题开始
+0000 0010 2 02 STX (start of text) 		正文开始
+0000 0011 3 03 ETX (end of text) 		正文结束
+0000 0100 4 04 EOT (end of transmission) 传输结束
+0000 0101 5 05 ENQ (enquiry) 		请求
+0000 0110 6 06 ACK (acknowledge) 		收到通知
+0000 0111 7 07 BEL (bell) 		响铃
+0000 1000 8 08 BS (backspace) 	退格
+0000 1001 9 09 HT (horizontal tab) 		水平制表符---------------
+0000 1010 10 0A LF (NL line feed, new line) 换行键----------------
+0000 1011 11 0B VT (vertical tab) 	垂直制表符
+0000 1100 12 0C FF (NP form feed, new page) 换页键
+0000 1101 13 0D CR (carriage return) 	回车键
+0000 1110 14 0E SO (shift out) 	不用切换
+0000 1111 15 0F SI (shift in) 	启用切换
+0001 0000 16 10 DLE (data link escape) 数据链路转义
+0001 0001 17 11 DC1 (device control 1) 设备控制1
+0001 0010 18 12 DC2 (device control 2) 设备控制2
+0001 0011 19 13 DC3 (device control 3) 设备控制3
+0001 0100 20 14 DC4 (device control 4) 设备控制4
+0001 0101 21 15 NAK (negative acknowledge) 拒绝接收
+0001 0110 22 16 SYN (synchronous idle) 	同步空闲
+0001 0111 23 17 ETB (end of trans. block) 传输块结束
+0001 1000 24 18 CAN (cancel) 		取消
+0001 1001 25 19 EM (end of medium) 	介质中断
+0001 1010 26 1A SUB (substitute) 	替补
+0001 1011 27 1B ESC (escape) 		溢出
+0001 1100 28 1C FS (file separator) 	文件分割符
+0001 1101 29 1D GS (group separator) 	分组符
+0001 1110 30 1E RS (record separator) 	记录分离符
+0001 1111 31 1F US (unit separator) 	单元分隔符
+
+IFS	由 <space> 或 <tab> 或 <enter> 三者之一组成(我们常用 space )。
+CR	由 <enter> 产生。
+=	设定变量。
+$	作变量或运算替换(请不要与 shell prompt 搞混了)。取用变量前导符：亦即是变量之前需要加的变量取代值
+#		批注符号：这个最常被使用在 script 当中，视为说明！在后的数据均不运行
+;	在前一个命令结束时，而忽略其返回值，继续执行下一个命令。 *
+!	执行 history 列表中的命令。*逻辑运算意义上的『非』 not 的意思！
+/		目录符号：路径分隔的符号
+~		用户的家目录
+>	重导向 stdout。 *
+>, >>	数据流重导向：输出导向，分别是『取代』与『累加』
+<	重导向 stdin。 *
+<, <<	数据流重导向：输入导向 (这两个留待下节介绍)
+|	命令管线。 *
+||	在前一个命令结束时，若返回值为 false，继续执行下一个命令。 *
+&	重导向 file descriptor ，或将命令置于背境执行。 *工作控制 (job control)：将命令变成背景下工作
+&&	在前一个命令结束时，若返回值为 true，继续执行下一个命令。 *
+( )	将其内的命令置于 nested subshell 执行，或用于运算或命令替换。 *在中间为子 shell 的起始与结束
+{ }	将其内的命令置于 non-named function 中执行，或用在变量替换的界定范围。在中间为命令区块的组合！
+` `		两个『 ` 』中间为可以先运行的命令，亦可使用 $( )
+‘’(单引号)	又叫硬转义，其内部所有的shell 元字符、通配符都会被关掉。注意，硬转义中不允许出现’(单引号)。
+“”(双引号)	又叫软转义，其内部只允许出现特定的shell 元字符：$用于参数代换 `用于命令代替
+\(反斜杠)	又叫转义，去除其后紧跟的元字符或通配符的特殊意义。
+
+
+sed
+-n	-i	-r	-f(script-file)	-s--separate -lN
+''	3	3,5	3,+3		0~2(first~step)	/root/	'\-root-'	$
+!
+p 	d	s	=		a\ xx	i\ xx	c\ xx	r\ /etc/hosts	h H g G　NＬ
+;
+j1=;f=r;
+for k1 in a\ xx ;do 
+	((j1+=100));k=$k1;j=$j1;
+	for i in '' 3 3,5 3,+3 0~2 /root/ $;do 
+		echo -e "\n\t$[++j]\tsed -$f $i$k"' /etc/passwd';
+		cat -n /etc/passwd|sed -$f "$i$k";
+done;done
+for i in h H;do for j in g G;do for k in '' 2 4;do for l in '' 2 4;do con="$k$i;$l$j";echo sed $con t12345;sed $con t12345;done;done;done;done
+/str/s//-&-/g
+
+awk
+-f -F[:;] -v
+!(NR%10)	NR<10||NR>99	NR!~/[0-8]/
+ARGC	(arguments counter)number of argument vector（ARGV）>=2
+FILENAMW
+FNR	文件编号
+NR	行号
+NF	filed数
+FS	字段分隔符
+RS	输入分隔符，默认\n
+OFS	输出字段分隔，默认空格	OUTPUT FILED SEPARATE
+ORS	输出记录分隔，默认\n		Output Record Separate
++ - * / % ^
+++ -- += -= *= /= 
+> < >= <= == != 
+~ !~
+&& ||
+(a1)		a1=3;print 11(a1)11
+{}		i=1{}
+a,1,0,'',' '	awk 1 /file;awk (a,0,'',' ',\ ) /file 
+a,1,0	if(1)print 1;else print 0
+while	while(i<=10){print i++}
+do while	do{print i++}while(i<=10)
+for		for(;i<=10;){print i++}
+break continue
+rand()	srand();print rand()
+gsub(/x/,y,z)	z默认$0	gusb(/root/,"++++",$0)	gsub (/root/,"++++")
+sub(/x/,y,z)	第一个x被y替换
+length(z)	计算并返回z的长度；每行长度print length()
+getline	跳过本行；读取下一行;用下一行代替本行
+
+
+1.注释符号 #	“#”用于注释 	“#！”用于说明用什么脚本解释器（bash、zsh等等）
+2.命令分隔符 ;
+3.终止case符号（”;;”）
+4.点号”.”相当于source命令
+5.引号 		阻止STRING中(''所有;""大部分)特殊字符的解释
+s/原/新/{,g,p,n(第n个)}
+
+
+
+
+
+
+
+
+
