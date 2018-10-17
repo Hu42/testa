@@ -4,6 +4,7 @@ show variables like "validate%";
 set global validate_password_policy=0;#echo validate_password_policy=0 >> /etc/my.cnf
 set global validate_password_length=6;
 alter user user() identified by '123456';
+ps -C mysqld  
 -------数据类型
 tinyint smallint mediumint int bigint 
 float double decimal(4,2) 
@@ -13,19 +14,62 @@ select now();select sysdate();
 select year(now()); select month(now()); select day(now());
 select time(now()); select date(now());
 select curtime(); select curdate();
--------操作
+-------表操作
 create table t7(meeting datetime, party timestamp);
-select * from t44;
-insert into t44;
-update t44 set name=1;
-delete from t44;
-alter table t44 add f int(4) unsigned zerofill not null default 18 after g;
-		modify f int unsigned first;
-		change f f1 int unsigned;
-		drop f;
-		rename t43;
+	select fieldname alias,f2 a2 from t44;
+	insert into t44(f) values(),();
+	update t44 set name=1,id=1 where id=0;
+	delete from t44;
+	alter table t44 add f int(4) unsigned zerofill not null default 18 after g;
+			modify f int unsigned first;
+			change f f1 int unsigned;
+			drop f;
+			rename t43;
+---------------
+排序	order by uid desc |asc(default)
+分组	group by gid;无null
+过滤	having;
+行数	limit (N,)M;    0~nN,第N+1行,defualt0 M行数;不同用 
+where-----------
+逻辑	!() not and or
+比较	= != < > <= >=
+空?	is null		is not null
+点集	in ()		
+范围	between 1 and 5
+通配符	like '__' '%'
+正则	regexp 
+四则
+
+---------------
+统计	count(id) avg sum min max
+去重	select distinct shell from user;
+别名	select 2018-age birthyear;
+-------------------
 create table t45(id int,index(id));
 alter table add 45(name char,index(name));
 create index iidd on t45(id);
 drop index iidd on t45;
 show index from t45\G;
+
+create table t45(id int primary key auto_increment);
+create table t45(id int auto_increment,primary key(id));
+alter table t45 modify id int;
+alter table t45 drop primary key;
+
+create table t46(id2 int ,foreign key(id2) references t45(id) on update cascade on delete cascade);
+show create table t46;
+alter table t46 drop foreign key ....;
+--------------------
+show variables like 'default%';
+show engines;
+set default_storage_engine=myisam/innodb;echo "..=.." >> /etc/my.conf
+
+create table user(name char(50),password char,uid int,gid int,comment varchar(150),homedir varchar(100),shell varchar(30));
+show variables like 'secure_file_priv';
+system cp /etc/passwd /var/lib/mysql-files/;
+system ls /var/lib/mysql-files/;
+load data infile '/var/lib/mysql-files/passwd' into table user fields terminated by ':' lines terminated by '\n';
+
+alter table user add id int primary key auto_increment first;
+mkdir /mydir;chown mysql /mydir;echo 'secure_file_priv=/mydir' >> /etc/my.conf;1restart mysqld;
+select * from user into outfile '/mydir/hoho1' fields terminated by '\t' lines terminated by '\n';
