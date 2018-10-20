@@ -15,61 +15,73 @@ select year(now()); select month(now()); select day(now());
 select time(now()); select date(now());
 select curtime(); select curdate();
 -------表操作
-create table t7(meeting datetime, party timestamp);
+show variables like 'default%';show engines;
+set default_storage_engine=myisam/innodb;echo "..=.." >> /etc/my.conf
+create table t7(meeting datetime, party timestamp)DEFAULT CHARSET=utf8;
+create table t7 select....having 0;
 	select fieldname alias,f2 a2 from t44;
 	insert into t44(f) values(),();
 	update t44 set name=1,id=1 where id=0;
 	delete from t44;
-	alter table t44 add f int(4) unsigned zerofill not null default 18 after g;
-			modify f int unsigned first;
-			change f f1 int unsigned;
-			drop f;
-			rename t43;
----------------
-排序	order by uid desc |asc(default)
-分组	group by gid;无null
-过滤	having;
-行数	limit (N,)M;    0~nN,第N+1行,defualt0 M行数;不同用 
+	alter table t44 add f int;	二个括号
+				modify f int  ;一次一个
+				change f f1 int ;
+				drop f;
+				rename t43;
+--------------------
+id
+int
+unsigned zerofill
+not null
+primary auto_increment /defualt 18
+after first;
 where-----------
+四则	+-*/
 逻辑	!() not and or
-比较	= != < > <= >=
+比较	= != < > <= >= (select avg(.) from t2)
 空?	is null		is not null
-点集	in ()		
+点集	in ('','','')		(select name from t2) 单列
 范围	between 1 and 5
 通配符	like '__' '%'
 正则	regexp 
-四则
-
+---------------
+连接	left join t2 on t1...=t2...
+过滤	having;
+分组	group by gid desc |asc        不跟having
+排序	order by uid desc |asc(default)
+行数	limit (N,)M;    0~nN,第N+1行,defualt0 M行数
 ---------------
 统计	count(id) avg sum min max
 去重	select distinct shell from user;
 别名	select 2018-age birthyear;
+----------
+多表	,
 -------------------
-create table t45(id int,index(id));
-alter table add 45(name char,index(name));
-create index iidd on t45(id);
-drop index iidd on t45;
 show index from t45\G;
+＊create index iidd on t45(id);
+create table t45(id int,index(id));-alter table -- add
+＊drop index iidd on t45;
 
-create table t45(id int primary key auto_increment);
-create table t45(id int auto_increment,primary key(id));
-alter table t45 modify id int;
-alter table t45 drop primary key;
+＊create table t45(id int primary key auto_increment);-alter table -- modify
+create table t45(id int auto_increment,primary key(id));-alter table -- add
+alter table t45 modify id int;alter table t45 drop primary key;
 
-create table t46(id2 int ,foreign key(id2) references t45(id) on update cascade on delete cascade);
-show create table t46;
+＊show create table t46;
+create table t46(id2 int ,foreign key(id2) references t45(id) on update cascade on delete cascade);-alter table -- add
 alter table t46 drop foreign key ....;
---------------------
-show variables like 'default%';
-show engines;
-set default_storage_engine=myisam/innodb;echo "..=.." >> /etc/my.conf
-
-create table user(name char(50),password char,uid int,gid int,comment varchar(150),homedir varchar(100),shell varchar(30));
+--------------------导入导出
 show variables like 'secure_file_priv';
-system cp /etc/passwd /var/lib/mysql-files/;
-system ls /var/lib/mysql-files/;
+create table user(name char(50),password char,uid int,gid int,comment varchar(150),homedir varchar(100),shell varchar(30));
 load data infile '/var/lib/mysql-files/passwd' into table user fields terminated by ':' lines terminated by '\n';
-
-alter table user add id int primary key auto_increment first;
 mkdir /mydir;chown mysql /mydir;echo 'secure_file_priv=/mydir' >> /etc/my.conf;1restart mysqld;
 select * from user into outfile '/mydir/hoho1' fields terminated by '\t' lines terminated by '\n';
+--------------------
+grant all on *.* to mydba@'%' identified by '123456' with grant option;grant insert,update on mysql.* to mydba@'%';
+show grants for mydba@'%'; revoke all on *.* from mydba@'%';与前一条命令结果里的库一样才能撤销
+后*必前*  ;;on gamedb.* 可创gamedb库;;多次授权叠加
+yum -y install mariadb;mysql -uroot -p123456 -hm0;
+show grants(for @);select user();select @@hostname;
+set password=password('1234')
+set password for mydba@'%'=password('123456');---不能用user(),直接不跟for,可以没@
+alter user user() identified by '123456';
+-------------------
