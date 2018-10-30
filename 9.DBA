@@ -1,0 +1,85 @@
+#!/bin/bash
+create view v1(f1,f2..可无,有要列数相等) as select * from user;
+show table status where comment='view';只能用where?
+show create view v1;
+create (or replace)
+where ------ order ------ with (local (cascaded--默认)) check option
+--未定义(默认)
+--替换
+--具体化
+
+show global variables (like ...);	set       global vali.. @@global.vali...		select @@global.vali...
+show (session) variables (like ...);	set       (session) vali... @@(session.)vali...		select @@(session.)vali...
+select @haha,@y;			set @haha=3;select max(uid) into @y from user;
+(begin)declare x int default 9;select x,y;(end) 	set y ='jim'
+p3(in id int) begin select id end	begin set id=1 end
+p3(out id int) ..call p3(@iidd)		begin set id=1 end ;select @iidd....1
+定义		赋值
+
+
+show procedure status;
+select db,name,type from mysql.proc where db="db9";
+call p1();
+drop procedure (if exsits)p1;
+delimiter haha
+create procedure say48() begin declare x int default 9;declare y char(10);set y ='jim';select x,y;end haha
+delimiter ;
+
++-*/% 		/小数除	DIV整除
+= > >= < <= != between .. and ..
+if 条件 then	(else)	end if;
+while 条件 do		end while;
+loop			end loop;
+repeat 			until 条件成立 end repeat;
+(标签loab1:)loop 	leave loab1;
+			iterate loab1
+flush status;
+show global status like '%Max_used_connections%';
+show variables like "max_connections%";	#查看默认的最大连接数
+show variables like "%timeout%";	#连接超时时间
+show variables like "thread_cache_size";#允许保存在缓存中被重用的线程数量
+show variables like "key_buffer_size"; 	#用于MyISAM引擎的关键索引缓存大小
+show variables like "sort_buffer_size";	#为每个要排序的线程分配此大小的缓存空间
+show variables like "read_buffer_size";	#为顺序读取表记录保留的缓存大小
+show variables like "table_open_cache";	#为所有线程缓存的打开的表的数量
+show variables like 'query_cache%';
+show global status like '%qcache%';
+
+-----------
+0:server_id=51
+  log_bin
+  binlog_format='mixed'
+1:log-error[=name]
+2:general-log
+  general-log-file=
+3:slow-query-log
+  slow-query-log-file=
+  long-query-time=  #default 10s
+  log-queries-not-using-indexes #未用索引的查询
+tail -f /var/lib/mysql/m51.log
+mysqldumpslow	/var/lib/mysql/m51-slow.log	#统计慢查询日志记录的sql命令保存到文本文件
+--------
+RDBMS(relational database management system)
+oracle
+db2
+ms sql server #非跨平台
+mysql,mariadb 	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

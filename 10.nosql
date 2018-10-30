@@ -1,0 +1,88 @@
+#!/bin/bash
+RDBMS(relational database management system)
+oracle
+db2
+ms sql server #非跨平台
+mysql,mariadb   
+-----------
+nosql(not only sql)
+#非关系型数据库
+#不需要预先定义存储结构
+#表的每条记录都可以有不同的类型和结构
+'redis
+ mongodb
+ memcaches
+ couchdb
+ neo4j
+ flochdb'
+Port           : 6379
+Config file    : /etc/redis/6379.conf
+Log file       : /var/log/redis_6379.log
+Data dir       : /var/lib/redis/6379
+Executable     : /usr/local/bin/redis-server
+Cli Executable : /usr/local/bin/redis-cli
+/etc/init.d/redis_6379
+EXEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+PIDFILE=/var/run/redis_6379.pid
+CONF="/etc/redis/6379.conf"
+-------
+set keyname keyvalue;#设置变量值
+get keyname	#获取
+#select 0-15	#换库
+keys * 		#打印所有变量 * ? []
+exists keyname	#测试是否存在
+type keyname	#查看类型
+move keyname dbname #移动
+expire keyname 10 #设置有效时间 -1永久 -2不存在或过期;ttl keyname	#查看生存时间
+del keyname	#删除变量
+flushall	#删除所有变量
+flushdb		#删除当前库变量
+save		#保存所有变量
+shutdown	#自动存盘(内存->硬盘),关闭redis服务.
+----------------do;done
+yum -y install gcc gcc-c++.x86_64 make
+cd lnmp/;tar -xf redis-4.0.8.tar.gz 
+cd redis-4.0.8/;make && make install
+>utils/zeroooooo;for i in {1..8};do echo >> utils/zeroooooo;done
+utils/install_server.sh < utils/zeroooooo
+/etc/init.d/redis_6379 status
+sed -i "/^bind/c bind 192.168.4.`ipn4 4`" /etc/redis/6379.conf
+sed -i "/^port/c port 63`ipn4 4`" /etc/redis/6379.conf
+sed -i "/requirepass /c requirepass 123456" /etc/redis/6379.conf
+sed -n '/^bind/p' /etc/redis/6379.conf
+sed -n '/^port/p' /etc/redis/6379.conf
+sed -n '/requirepass /p' /etc/redis/6379.conf
+ln -s /etc/init.d/redis_6379 /usr/bin/
+awk '/^bind/{print$2}' /etc/redis/6379.conf
+awk '/^port/{print$2}' /etc/redis/6379.conf
+awk '/^requ/{print$2}' /etc/redis/6379.conf
+#REDISPORT="6379"
+vim /etc/init.d/redis_6379
+#REDISPASS=`awk '/^requ/{print$2}' /etc/redis/6379.conf`;[ -n $REDISPASS ]&&REDISPASS="-a $REDISPASS"
+#REDISBIND=`ss -tunlp |grep 'redis-server'|awk '{print$5}'|awk -F: '{print$1}'`;[ -n $REDISBIND ]&&REDISBIND="-h $REDISBIND"
+#REDISPORT=`ss -tunlp |grep 'redis-server'|awk '{print$5}'|awk -F: '{print$2}'`;[ -n $REDISPORT ]&&REDISPORT="-p $REDISPORT"
+#            $CLIEXEC $REDISPORT $REDISBIND $REDISPASS shutdown
+redis_6379 restart;redis_6379 status;ss -tunlp |egrep 'redis-server'|awk '{print $5}'
+sed -i /cluster-ena/c' cluster-enabled yes' /etc/redis/6379.conf
+sed -i /cluster-config-file/s'/# *//' /etc/redis/6379.conf
+sed -i /cluster-node-timeout/c' cluster-node-timeout 5000' /etc/redis/6379.conf
+sed -n /^daemonize/p /etc/redis/6379.conf
+sed -n /cluster-ena/p /etc/redis/6379.conf;\
+sed -n /cluster-config-file/p /etc/redis/6379.conf;\
+sed -n /cluster-node-timeout/p /etc/redis/6379.conf
+rediscli clustb.rb create --replicas 1 192.168.4.51:6351 192.168.4.52:6352 192.168.4.53:6353 192.168.4.54:6354 192.168.4.55:6355 192.168.4.56:6356 
+for i in info nodes; do rediscli cluster $i;done
+for i in `redis-trib.rb check 192.168.4.51:6351 |awk '/M:/{print$2}'`;do redis-trib.rb check 192.168.4.51:6351 |grep -B2 $i|grep 192.168.4.5.:635.;done
+
+
+
+
+
+
+
+
+
+
+
+
