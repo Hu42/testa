@@ -1,0 +1,22 @@
+#!/bin/bash
+devops;work directory
+cd devops;git init 
+##or## git init devops####ll devops
+echo 'print("hello world")' > hello.py
+git add hello.py;git status;git status -s;
+git commit -m "add hello.py to git.files";git ls-files
+git rm  hello.py;git status;git status -s;
+git commit -m "rm hello.py from git.files";git ls-files
+git rm 2;git status;git reset HEAD 2;git status;
+docker load < /path/to/gitlab_zh.tar
+docker run -d -h gitlab --name gitlab -p 443:443 -p 80:80 \
+-p 22:22 --restart always -v /srv/gitlab/config:/etc/gitlab \
+-v /srv/gitlab/logs:/var/log/gitlab \
+-v /srv/gitlab/data:/var/opt/gitlab gitlab_zh:latest
+git remote rename origin old-origin
+git remote add origin git@m10:group1/pp.git
+git push -u origin --all
+git add hi.py;git commit hi.py -m 'new test'
+git push origin master
+git clone git@m10:group1/pp.git 
+git pull
